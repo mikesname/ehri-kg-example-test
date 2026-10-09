@@ -1,0 +1,3 @@
+?relation	?relationType	?source	?target	?description
+<http://lod.ehri-project-test.eu/hasCopyRelations/00000000-0000-0000-0000-000000000001>	<http://lod.ehri-project-test.eu/ontology#HasCopyRelation>	<http://lod.ehri-project-test.eu/units/be-000001-kd_00001>	<http://lod.ehri-project-test.eu/units/nl-000002-example_copy>	"Example description of the copy."
+<http://lod.ehri-project-test.eu/isCopyOfRelations/00000000-0000-0000-0000-000000000001>	<http://lod.ehri-project-test.eu/ontology#IsCopyOfRelation>	<http://lod.ehri-project-test.eu/units/nl-000002-example_copy>	<http://lod.ehri-project-test.eu/units/be-000001-kd_00001>	"Example description of the copy."

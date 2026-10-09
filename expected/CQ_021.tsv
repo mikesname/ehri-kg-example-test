@@ -1,0 +1,5 @@
+?level	?recordCount
+<http://lod.ehri-project-test.eu/ontology#Item>	"1"^^<http://www.w3.org/2001/XMLSchema#integer>
+<http://lod.ehri-project-test.eu/ontology#OtherLevel>	"1"^^<http://www.w3.org/2001/XMLSchema#integer>
+<http://lod.ehri-project-test.eu/vocabularies/recordSetTypes#Subcollection>	"1"^^<http://www.w3.org/2001/XMLSchema#integer>
+<https://www.ica.org/standards/RiC/vocabularies/recordSetTypes#Collection>	"1"^^<http://www.w3.org/2001/XMLSchema#integer>

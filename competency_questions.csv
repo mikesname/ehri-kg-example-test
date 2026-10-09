@@ -1,0 +1,388 @@
+#,Competency Question,Expected answer,Other KGs,Use case description,Status,Complexity,Priority,Concepts,Comments,SPARQL
+CQ_001,List countries and labels,A list of country URIs and their English names,,Browse from top level,Accepted,Low,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT ?country ?countryLabel WHERE {
+  ?country a ehri:Country ;
+    rico:name ?countryLabel .
+}"
+CQ_002,List institutions in a specific country,A list of institution URIs and their main name,,Browse institutions from country level,Accepted,Low,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_countries: <http://lod.ehri-project-test.eu/countries/>
+
+SELECT ?institution ?institutionLabel WHERE {
+  ehri_countries:be a ehri:Country ;
+    rico:name ?countryLabel ;
+    rico:isOrWasLocationOfAgent ?institution .
+  ?institution rico:name ?institutionLabel .
+}"
+CQ_003,Get contact information about institutions in a specific country,"Country label, institution URI, label, location and physical location URIs, phone, email, address and zip code",,Extracting bulk contact info,Accepted,Medium,High,,,"PREFIX schema: <http://schema.org/>
+PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_countries: <http://lod.ehri-project-test.eu/countries/>
+
+SELECT * WHERE {
+  ehri_countries:be a ehri:Country ;
+    rico:name ?countryLabel ;
+    rico:isOrWasLocationOfAgent ?institution .
+  ?institution a ehri:Institution ;
+    rico:name ?institutionLabel ;
+    rico:agentHasOrHadLocation ?institutionLocation .
+  ?institutionLocation rico:hasOrHadPhysicalLocation ?physicalLocation .
+  ?physicalLocation schema:telephone ?phone ;
+    schema:email ?email ;
+    rico:name ?address ;
+    schema:postalCode ?zipCode .
+}"
+CQ_004,List collections in a specific institution,Collection URI and label,,Browse records from institution level,Accepted,Low,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_institutions: <http://lod.ehri-project-test.eu/institutions/>
+
+SELECT ?record ?recordLabel WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasOrHadHolder ehri_institutions:nl-000002 ;
+    rico:title ?recordLabel .
+  FILTER(lang(?recordLabel) = ""en"")
+}"
+CQ_005,"Get ""scope and content"" information of records from a specific institution, in a specific language","Record URI, label, and scope/content text",,Extracting textual information,Accepted,Low,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_institutions: <http://lod.ehri-project-test.eu/institutions/>
+
+SELECT ?record ?recordLabel ?scopeAndContent WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasOrHadHolder ehri_institutions:be-000001 ;
+    rico:title ?recordLabel ;
+    rico:scopeAndContent ?scopeAndContent .
+  FILTER(lang(?scopeAndContent) = ""nl"" && lang(?recordLabel) = ""nl"")
+}"
+CQ_006,Get records with a specific subject access point,Record URI and label,,Browsing via access points,Accepted,Low,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_terms: <http://lod.ehri-project-test.eu/vocabularies/ehri-terms/>
+
+SELECT ?record ?recordLabel WHERE {
+  ?record a ehri:RecordSet ;
+    rico:title ?recordLabel ;
+    rico:hasOrHadSubject ehri_terms:1 .
+  FILTER(lang(?recordLabel) = ""en"")
+}"
+CQ_007,Count the number of records in a specific country,An integer,,Analytics,Accepted,Low,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_countries: <http://lod.ehri-project-test.eu/countries/>
+
+SELECT (COUNT(DISTINCT ?record) as ?totalRecords) WHERE {
+  ehri_countries:be a ehri:Country ;
+    rico:isOrWasLocationOfAgent ?institution .
+  ?record a ehri:RecordSet ;
+    rico:title ?recordLabel ;
+    rico:hasOrHadHolder ?institution ;
+}"
+CQ_008,Count the number of records per institution in a specific country,"Institution URI, record count integer",,Analytics,Accepted,Low,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_countries: <http://lod.ehri-project-test.eu/countries/>
+
+SELECT ?institution (COUNT(DISTINCT ?record) as ?totalRecords) WHERE {
+  ehri_countries:be a ehri:Country ;
+    rico:isOrWasLocationOfAgent ?institution .
+  ?record a ehri:RecordSet ;
+    rico:title ?recordLabel ;
+    rico:hasOrHadHolder ?institution ;
+}
+GROUP BY ?institution
+ORDER BY DESC(?totalRecords)"
+CQ_009,Show the average number of records per country,"Country URI, average record count integer",,Analytics,Accepted,Medium,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT ?country (AVG(?totalRecordByInstitution) as ?meanByCountry) WHERE {
+  ?country a ehri:Country ;
+    rico:isOrWasLocationOfAgent ?institution .
+  {
+    SELECT ?institution (COUNT(DISTINCT ?record) as ?totalRecordByInstitution) WHERE {
+      ?record a ehri:RecordSet ;
+        rico:title ?recordLabel ;
+        rico:hasOrHadHolder ?institution .
+      ?institution a ehri:Institution ;
+    }
+    GROUP BY ?institution
+  }
+}
+GROUP BY ?country"
+CQ_010,Count the number of records in countries with a population of less than 15 million,"Country URI, record count",DBPedia,Federated analytics,Accepted,Medium,High,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT ?countryLabel (COUNT(DISTINCT ?record) as ?recordsCount) WHERE {
+  ?country a ehri:Country ;
+    owl:sameAs ?dbCountry ;
+    rico:name ?countryLabel ;
+    rico:isOrWasLocationOfAgent ?institution .
+  ?record a ehri:RecordSet ;
+    rico:title ?recordLabel ;
+    rico:hasOrHadHolder ?institution .
+  SERVICE <https://dbpedia.org/sparql/> {
+    ?dbCountry dbo:populationTotal ?population .
+  }
+  FILTER (?population < 15000000)
+}
+GROUP BY ?countryLabel"
+CQ_011,Statistics of records whose subject is or not a survivor (Federated query against CDEC),"Survivor boolean, record count integer",CDEC,Federated analytics,Accepted,Medium,High,,,"PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_institutions: <http://lod.ehri-project-test.eu/institutions/>
+PREFIX bio-ext: <http://dati.cdec.it/lod/bio-ext/>
+
+SELECT ?survivor (COUNT(?record) as ?recordCount) WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasOrHadHolder ehri_institutions:be-000001 ;
+    rico:hasOrHadSubject ?personEHRI .
+  ?personEHRI owl:sameAs ?person .
+  SERVICE <http://lod.xdams.org/sparql> {
+    ?person a foaf:Person ;
+      bio-ext:shoahSurvivor ?survivor .
+  }
+}
+GROUP BY ?survivor"
+CQ_012,Records mentioning people deported to Auschwitz (Federated query against CDEC),List of URIs,CDEC,Federated analytics,Accepted,Medium,High,,,"PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_institutions: <http://lod.ehri-project-test.eu/institutions/>
+PREFIX bio-ext: <http://dati.cdec.it/lod/bio-ext/>
+PREFIX shoah: <http://dati.cdec.it/lod/shoah/>
+
+SELECT ?record WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasOrHadHolder ehri_institutions:be-000001 ;
+    rico:hasOrHadSubject ?personEHRI .
+  ?personEHRI owl:sameAs ?person .
+  SERVICE <http://lod.xdams.org/sparql> {
+    ?person a foaf:Person ;
+      shoah:persecution ?persecution .
+    ?persecution shoah:toNaziCamp ?camp .
+    ?camp rdfs:label ""Auschwitz"" .
+  }
+}"
+CQ_013,List subject concepts against the number of linked records,"List of concept URIs, linked record count integer",,Analytics,Proposed,,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?concept (COUNT(DISTINCT ?record) AS ?recordCount) WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasOrHadSubject ?concept .
+  ?concept a skos:Concept .
+}
+GROUP BY ?concept
+ORDER BY DESC(?recordCount) ?concept"
+CQ_014,Get the institution with the deepest record hierarchy,"Institution URI, hierarchy depth integer",,Analytics,Proposed,,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT ?institution (MAX(?depth) AS ?maxDepth) WHERE {
+  {
+    SELECT ?institution ?record (COUNT(DISTINCT ?ancestor) AS ?depth) WHERE {
+      ?record a ehri:RecordSet ;
+        rico:hasOrHadHolder ?institution ;
+        rico:isOrWasIncludedIn* ?ancestor .
+    }
+    GROUP BY ?institution ?record
+  }
+}
+GROUP BY ?institution
+ORDER BY DESC(?maxDepth)
+LIMIT 1"
+CQ_015,List records linked with a specific corporate body,Record URI and label,,Browsing via access points,Proposed,,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_cb: <http://lod.ehri-project-test.eu/vocabularies/ehri-cb/>
+
+SELECT DISTINCT ?record ?recordLabel WHERE {
+  ?record a ehri:RecordSet ;
+    rico:title ?recordLabel .
+  {
+    ?record rico:hasOrHadSubject ehri_cb:000001 .
+  }
+  UNION
+  {
+    ?record rico:hasCreator ehri_cb:000001 .
+  }
+  FILTER(lang(?recordLabel) = ""en"")
+}"
+CQ_016,Show the path from a specific record up to its top-level collection,"Ancestor record URIs and labels, ordered from the top-level collection down, with their depth",,Breadcrumb navigation within a record hierarchy,Proposed,Medium,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_units: <http://lod.ehri-project-test.eu/units/>
+
+SELECT ?ancestor ?ancestorLabel (COUNT(DISTINCT ?higher) AS ?depth) WHERE {
+  ehri_units:be-000001-kd_00001-1-1 rico:isOrWasIncludedIn+ ?ancestor .
+  ?ancestor rico:isOrWasIncludedIn* ?higher ;
+    rico:title ?ancestorLabel .
+  FILTER(lang(?ancestorLabel) = ""en"")
+}
+GROUP BY ?ancestor ?ancestorLabel
+ORDER BY ?depth"
+CQ_017,Which institutions hold copies of records from institutions in another country?,"Copy holder URI and country, original record URI, original holder URI and country",,Tracing the dispersal of archival material across countries,Proposed,Medium,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT DISTINCT ?copyHolder ?copyCountry ?original ?originalHolder ?originalCountry WHERE {
+  ?relation a ehri:HasCopyRelation ;
+    rico:relationHasSource ?original ;
+    rico:relationHasTarget ?copy .
+  ?original a ehri:RecordSet ;
+    rico:hasOrHadHolder ?originalHolder .
+  {
+    ?copy rico:hasOrHadHolder ?copyHolder .
+  }
+  UNION
+  {
+    ?copy a ehri:Institution .
+    BIND(?copy AS ?copyHolder)
+  }
+  ?originalCountry a ehri:Country ;
+    rico:isOrWasLocationOfAgent ?originalHolder .
+  ?copyCountry a ehri:Country ;
+    rico:isOrWasLocationOfAgent ?copyHolder .
+  FILTER(?copyCountry != ?originalCountry)
+}"
+CQ_018,"Find institutions by any of their names (authorised, parallel or alternative)",Institution URI and main name,,"Searching for institutions known by other names, acronyms or historical names",Proposed,Low,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT DISTINCT ?institution ?institutionLabel WHERE {
+  ?institution a ehri:Institution ;
+    rico:name ?institutionLabel .
+  {
+    ?institution rico:name ?name .
+  }
+  UNION
+  {
+    ?institution rico:hasOrHadAgentName ?agentName .
+    ?agentName rico:name ?name .
+  }
+  FILTER(CONTAINS(LCASE(STR(?name)), ""jmdv""))
+}"
+CQ_019,"List the child records of a specific record, with their level of description","Child record URI, label and record set type URI",,Browsing down a record hierarchy,Proposed,Low,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_units: <http://lod.ehri-project-test.eu/units/>
+
+SELECT ?record ?recordLabel ?level WHERE {
+  ?record rico:isOrWasIncludedIn ehri_units:be-000001-kd_00001 ;
+    rico:title ?recordLabel .
+  OPTIONAL {
+    ?record rico:hasRecordSetType ?level .
+  }
+  FILTER(lang(?recordLabel) = ""en"")
+}"
+CQ_020,List the top-level records of a specific institution,Record URI and label,,"Browsing records from institution level, starting at the top of each hierarchy",Proposed,Low,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_institutions: <http://lod.ehri-project-test.eu/institutions/>
+
+SELECT ?record ?recordLabel WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasOrHadHolder ehri_institutions:be-000001 ;
+    rico:title ?recordLabel .
+  FILTER NOT EXISTS {
+    ?record rico:isOrWasIncludedIn ?parent .
+  }
+  FILTER(lang(?recordLabel) = ""en"")
+}"
+CQ_021,Count records per level of description,"Record set type URI, record count integer",,Analytics,Proposed,Low,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT ?level (COUNT(DISTINCT ?record) AS ?recordCount) WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasRecordSetType ?level .
+}
+GROUP BY ?level
+ORDER BY DESC(?recordCount) ?level"
+CQ_022,Describe the copy relations of a specific record,"Relation URI, relation type, source and target URIs, and description",,Finding where copies or originals of a record are and what they consist of,Proposed,Medium,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_units: <http://lod.ehri-project-test.eu/units/>
+
+SELECT ?relation ?relationType ?source ?target ?description WHERE {
+  VALUES ?relationType { ehri:HasCopyRelation ehri:IsCopyOfRelation }
+  ?relation a ?relationType ;
+    rico:relationHasSource ?source ;
+    rico:relationHasTarget ?target .
+  OPTIONAL {
+    ?relation rico:generalDescription ?description .
+  }
+  FILTER(?source = ehri_units:be-000001-kd_00001 || ?target = ehri_units:be-000001-kd_00001)
+}"
+CQ_023,List records whose date range includes a specific year,"Record URI, label, beginning and end dates",,Browsing records by period,Proposed,Medium,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT ?record ?recordLabel ?beginning ?end WHERE {
+  ?record a ehri:RecordSet ;
+    rico:title ?recordLabel ;
+    rico:hasBeginningDate/rico:normalizedDateValue ?beginning ;
+    rico:hasEndDate/rico:normalizedDateValue ?end .
+  FILTER(SUBSTR(STR(?beginning), 1, 4) <= ""1942"" && SUBSTR(STR(?end), 1, 4) >= ""1942"")
+  FILTER(lang(?recordLabel) = ""en"")
+}"
+CQ_024,List records containing material in a specific language and script,Record URI and label,,Finding records a researcher can read,Proposed,Low,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_languages: <http://lod.ehri-project-test.eu/languages/>
+PREFIX ehri_material_script: <http://lod.ehri-project-test.eu/materialScripts/>
+
+SELECT ?record ?recordLabel WHERE {
+  ?record a ehri:RecordSet ;
+    rico:title ?recordLabel ;
+    rico:hasOrHadSomeMembersWithLanguage ehri_languages:nld ;
+    ehri:hasOrHadScript ehri_material_script:Latn .
+  FILTER(lang(?recordLabel) = ""en"")
+}"
+CQ_025,In which languages is a specific record described?,Language tags,,Choosing a description language to display,Proposed,Low,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri_units: <http://lod.ehri-project-test.eu/units/>
+
+SELECT DISTINCT ?language WHERE {
+  ehri_units:be-000001-kd_00001 rico:title ?title .
+  BIND(lang(?title) AS ?language)
+}
+ORDER BY ?language"
+CQ_026,"List the creators of records, with their dates of existence","Record URI, creator URI, creator name, beginning and end dates",,Browsing records by provenance,Proposed,Medium,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT ?record ?creator ?creatorName ?beginning ?end WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasCreator ?creator .
+  ?creator rico:name ?creatorName .
+  OPTIONAL {
+    ?creator rico:hasBeginningDate/rico:normalizedDateValue ?beginning .
+  }
+  OPTIONAL {
+    ?creator rico:hasEndDate/rico:normalizedDateValue ?end .
+  }
+}"
+CQ_027,List institutions in a specific city,Institution URI and main name,,Browsing institutions by place,Proposed,Low,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+PREFIX ehri_cities: <http://lod.ehri-project-test.eu/cities/>
+
+SELECT ?institution ?institutionLabel WHERE {
+  ?institution a ehri:Institution ;
+    rico:name ?institutionLabel ;
+    rico:agentHasOrHadLocation ?location .
+  ?location rico:isContainedByTransitive+ ehri_cities:Mechelen .
+}"
+CQ_028,"List people who are subjects of records, with their birth and death dates","Person URI, name, birth and death dates",,Browsing via person access points,Proposed,Medium,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT DISTINCT ?person ?personName ?birth ?death WHERE {
+  ?record a ehri:RecordSet ;
+    rico:hasOrHadSubject ?person .
+  ?person a ehri:Person ;
+    rico:name ?personName .
+  OPTIONAL {
+    ?person rico:hasBirthDate/rico:normalizedDateValue ?birth .
+  }
+  OPTIONAL {
+    ?person rico:hasDeathDate/rico:normalizedDateValue ?death .
+  }
+}"
+CQ_029,Get the coordinates of institutions,"Institution URI, main name, latitude and longitude",,Showing institutions on a map,Proposed,Medium,,,,"PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
+PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
+
+SELECT ?institution ?institutionLabel ?latitude ?longitude WHERE {
+  ?institution a ehri:Institution ;
+    rico:name ?institutionLabel ;
+    rico:agentHasOrHadLocation/rico:hasOrHadPhysicalLocation/rico:hasOrHadCoordinates ?coordinates .
+  ?coordinates rico:latitude ?latitude ;
+    rico:longitude ?longitude .
+}"

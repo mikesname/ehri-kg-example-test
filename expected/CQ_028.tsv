@@ -1,0 +1,3 @@
+?person	?personName	?birth	?death
+<http://lod.ehri-project-test.eu/vocabularies/ehri-pers/000001>	"Hertz Jospa"	"1904"	"1966"
+<http://lod.ehri-project-test.eu/vocabularies/ehri-pers/000002>	"Example person"		

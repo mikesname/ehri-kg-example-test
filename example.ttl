@@ -1,0 +1,471 @@
+# A minimal example of the EHRI Knowledge Graph, complying with
+# the EHRI Ontology 0.2.0 and RiC-O 1.1.
+#
+# FIXME:
+#
+# * activity types are instances of ehri:AcquisitionType, ehri:FunctionType,
+#   and rico:OccupationType, where the mappings use the classes themselves;
+# * inconsistency in ehri:Item and ehri:OtherLevel in Ontology version 0.2.0
+#
+
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix ehri: <http://lod.ehri-project-test.eu/ontology#> .
+@prefix ehri_activity_types: <http://lod.ehri-project-test.eu/activityTypes/> .
+@prefix ehri_camps: <http://lod.ehri-project-test.eu/vocabularies/ehri-camps/> .
+@prefix ehri_cb: <http://lod.ehri-project-test.eu/vocabularies/ehri-cb/> .
+@prefix ehri_cities: <http://lod.ehri-project-test.eu/cities/> .
+@prefix ehri_countries: <http://lod.ehri-project-test.eu/countries/> .
+@prefix ehri_dates: <http://lod.ehri-project-test.eu/dates/> .
+@prefix ehri_families: <http://lod.ehri-project-test.eu/vocabularies/ehri-families/> .
+@prefix ehri_has_copy_relations: <http://lod.ehri-project-test.eu/hasCopyRelations/> .
+@prefix ehri_institutions: <http://lod.ehri-project-test.eu/institutions/> .
+@prefix ehri_is_copy_of_relations: <http://lod.ehri-project-test.eu/isCopyOfRelations/> .
+@prefix ehri_languages: <http://lod.ehri-project-test.eu/languages/> .
+@prefix ehri_material_script: <http://lod.ehri-project-test.eu/materialScripts/> .
+@prefix ehri_pers: <http://lod.ehri-project-test.eu/vocabularies/ehri-pers/> .
+@prefix ehri_regions: <http://lod.ehri-project-test.eu/regions/> .
+@prefix ehri_rst: <http://lod.ehri-project-test.eu/vocabularies/recordSetTypes#> .
+@prefix ehri_terms: <http://lod.ehri-project-test.eu/vocabularies/ehri-terms/> .
+@prefix ehri_units: <http://lod.ehri-project-test.eu/units/> .
+@prefix geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ric_rst: <https://www.ica.org/standards/RiC/vocabularies/recordSetTypes#> .
+@prefix rico: <https://www.ica.org/standards/RiC/ontology#> .
+@prefix schema: <http://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+
+#################
+### Countries ###
+#################
+
+ehri_countries:be
+        a ehri:Country ;
+        rico:name "Belgium"@en ;
+        rico:isOrWasLocationOfAgent ehri_institutions:be-000001 ;
+        rico:containsTransitive ehri_regions:Antwerpen ;
+        ehri:archivalHistory "Example archival history of Belgium."@en ;
+        ehri:archivalSituation "Example archival situation in Belgium."@en ;
+        ehri:researchSummary "Example summary of EHRI research in Belgium."@en ;
+        ehri:researchExtensive "Example extensive account of EHRI research in Belgium."@en ;
+        owl:sameAs dbr:Belgium .
+
+ehri_countries:nl
+        a ehri:Country ;
+        rico:name "Netherlands"@en ;
+        rico:isOrWasLocationOfAgent ehri_institutions:nl-000002 ;
+        rico:containsTransitive ehri_regions:Noord-Holland ;
+        owl:sameAs dbr:Netherlands .
+
+
+##########################
+### Regions and cities ###
+##########################
+
+ehri_regions:Antwerpen
+        a ehri:Region ;
+        rico:name "Antwerpen" ;
+        rico:isContainedByTransitive ehri_countries:be ;
+        rico:containsTransitive ehri_cities:Mechelen .
+
+ehri_cities:Mechelen
+        a ehri:City ;
+        rico:name "Mechelen" ;
+        rico:isContainedByTransitive ehri_regions:Antwerpen .
+
+ehri_regions:Noord-Holland
+        a ehri:Region ;
+        rico:name "Noord-Holland" ;
+        rico:isContainedByTransitive ehri_countries:nl ;
+        rico:containsTransitive ehri_cities:Amsterdam .
+
+ehri_cities:Amsterdam
+        a ehri:City ;
+        rico:name "Amsterdam" ;
+        rico:isContainedByTransitive ehri_regions:Noord-Holland .
+
+
+####################
+### Institutions ###
+####################
+
+ehri_institutions:be-000001
+        a ehri:Institution ;
+        rico:name "Kazerne Dossin"@en ;
+        rico:history "Example history of the institution."@en ;
+        rico:generalDescription "Example description of the institution's holdings."@en ;
+        rico:agentHasOrHadLocation <http://lod.ehri-project-test.eu/institutions/be-000001/locations/1> ;
+        rico:hasOrHadAgentName
+                <http://lod.ehri-project-test.eu/institutions/be-000001/parallelNames/Caserne_Dossin> ,
+                <http://lod.ehri-project-test.eu/institutions/be-000001/otherNames/JMDV> ;
+        rico:authorizedBy <http://lod.ehri-project-test.eu/institutions/be-000001/mandates/1> ;
+        rico:isOrWasHolderOf
+                ehri_units:be-000001-kd_00001 ,
+                ehri_units:be-000001-kd_00001-1 ,
+                ehri_units:be-000001-kd_00001-1-1 ;
+        ehri:accessibility "Example accessibility information."@en ;
+        ehri:administrativeStructure "Example administrative structure."@en ;
+        ehri:buildings "Example description of the buildings."@en ;
+        ehri:conditionsOfAccess "Example conditions of access to the institution."@en ;
+        ehri:findingAids "Example overview of the institution's finding aids."@en ;
+        ehri:generalContext "Example geographical and cultural context."@en ;
+        ehri:publicAreas "Example description of public areas."@en ;
+        ehri:recordsManagementAndCollectingPolicies "Example records management and collecting policies."@en ;
+        ehri:reproductionServices "Example reproduction services."@en ;
+        ehri:researchServices "Example research services."@en ;
+        ehri:sources "Example sources used to prepare the institution description."@en ;
+        rdfs:seeAlso <https://www.kazernedossin.eu/EN/> ;
+        schema:openingHours "Example opening hours."@en .
+
+ehri_institutions:nl-000002
+        a ehri:Institution ;
+        rico:name "NIOD Institute for War, Holocaust and Genocide Studies"@en ;
+        rico:agentHasOrHadLocation <http://lod.ehri-project-test.eu/institutions/nl-000002/locations/1> ;
+        rico:isOrWasHolderOf ehri_units:nl-000002-example_copy ;
+        rdfs:seeAlso <https://www.niod.nl/en> .
+
+# Location, address, and coordinates of an institution
+<http://lod.ehri-project-test.eu/institutions/be-000001/locations/1>
+        a rico:Place ;
+        rico:isContainedByTransitive ehri_cities:Mechelen ;
+        rico:hasOrHadPhysicalLocation <http://lod.ehri-project-test.eu/institutions/be-000001/addresses/1> .
+
+<http://lod.ehri-project-test.eu/institutions/be-000001/addresses/1>
+        a ehri:InstitutionAddress ;
+        rico:name "Goswin de Stassartstraat 153" ;
+        rico:hasOrHadCoordinates <http://lod.ehri-project-test.eu/institutions/be-000001/coordinates/1> ;
+        rico:isOrWasPhysicalLocationOf <http://lod.ehri-project-test.eu/institutions/be-000001/locations/1> ;
+        ehri:contactPerson "Example contact person" ;
+        schema:postalCode "2800" ;
+        schema:telephone "+32 15 00 00 00" ;
+        schema:faxNumber "+32 15 00 00 01" ;
+        schema:email "archives@example.org" ;
+        schema:contactType "Visitor address" .
+
+<http://lod.ehri-project-test.eu/institutions/be-000001/coordinates/1>
+        a rico:Coordinates ;
+        rico:latitude "51.0330"^^xsd:double ;
+        rico:longitude "4.4750"^^xsd:double ;
+        rico:isOrWasCoordinatesOf <http://lod.ehri-project-test.eu/institutions/be-000001/addresses/1> .
+
+# A minimal location and address: the address's country gives the
+# country's link to the institution
+<http://lod.ehri-project-test.eu/institutions/nl-000002/locations/1>
+        a rico:Place ;
+        rico:isContainedByTransitive ehri_cities:Amsterdam ;
+        rico:hasOrHadPhysicalLocation <http://lod.ehri-project-test.eu/institutions/nl-000002/addresses/1> .
+
+<http://lod.ehri-project-test.eu/institutions/nl-000002/addresses/1>
+        a ehri:InstitutionAddress ;
+        rico:name "Herengracht 380" ;
+        rico:isOrWasPhysicalLocationOf <http://lod.ehri-project-test.eu/institutions/nl-000002/locations/1> ;
+        schema:postalCode "1016 CJ" .
+
+# Parallel and alternative names of an institution
+<http://lod.ehri-project-test.eu/institutions/be-000001/parallelNames/Caserne_Dossin>
+        a ehri:ParallelAgentName ;
+        rico:name "Caserne Dossin" ;
+        rico:isOrWasAgentNameOf ehri_institutions:be-000001 .
+
+<http://lod.ehri-project-test.eu/institutions/be-000001/otherNames/JMDV>
+        a ehri:AlternateAgentName ;
+        rico:name "JMDV" ;
+        rico:isOrWasAgentNameOf ehri_institutions:be-000001 .
+
+# Mandate of an institution
+<http://lod.ehri-project-test.eu/institutions/be-000001/mandates/1>
+        a rico:Mandate ;
+        rico:generalDescription "Example mandate."@en ;
+        rico:authorizes ehri_institutions:be-000001 .
+
+
+#############################
+### Archival descriptions ###
+#############################
+
+# Top-level collection (ISAD(G) description in two languages)
+ehri_units:be-000001-kd_00001
+        a ehri:RecordSet ;
+        rico:identifier "KD_00001" ;
+        rico:hasOrHadIdentifier <http://lod.ehri-project-test.eu/units/be-000001-kd_00001/alternateIDs/1> ;
+        rico:hasRecordSetType ric_rst:Collection ;
+        rico:title
+                "Miscellaneous documents collected to create the Jewish Museum of Deportation and Resistance. Collection"@en ,
+                "Diverse documenten verzameld voor de oprichting van het Joods Museum van Deportatie en Verzet. Collectie"@nl ;
+        rico:hasOrHadTitle <http://lod.ehri-project-test.eu/units/be-000001-kd_00001/parallelNames/Verzameling_JMDV> ;
+        rico:scopeAndContent
+                "Example scope and content."@en ,
+                "Voorbeeld van bereik en inhoud."@nl ;
+        rico:recordResourceExtent "Example extent and medium."@en ;
+        rico:recordResourceStructure "Example system of arrangement."@en ;
+        rico:recordResourceSourceOfInformation "Example sources used to prepare the description."@en ;
+        rico:date "1940-1945" ;
+        rico:hasBeginningDate ehri_dates:1940 ;
+        rico:hasEndDate ehri_dates:1945 ;
+        rico:accruals "Example accruals."@en ;
+        rico:conditionsOfAccess "Example conditions governing access."@en ;
+        rico:conditionsOfUse "Example conditions of reproduction."@en ;
+        rico:note "Example general note."@en ;
+        rico:hasOrHadSomeMembersWithLanguage ehri_languages:nld , ehri_languages:fra ;
+        rico:hasOrHadHolder ehri_institutions:be-000001 ;
+        # FIXME: creator links don't seem to be generated yet by update service...
+        rico:hasCreator ehri_cb:000001 ;
+        rico:hasOrHadSubject ehri_terms:1 , ehri_camps:1 ;
+        rico:resultsOrResultedFrom <http://lod.ehri-project-test.eu/units/be-000001-kd_00001/acquisitions/1> ;
+        rico:includesOrIncluded ehri_units:be-000001-kd_00001-1 ;
+        rico:thingIsSourceOfRelation ehri_has_copy_relations:00000000-0000-0000-0000-000000000001 ;
+        rico:thingIsTargetOfRelation ehri_is_copy_of_relations:00000000-0000-0000-0000-000000000001 ;
+        ehri:archivalHistory "Example archival history."@en ;
+        ehri:biographicalHistory "Example biographical history of the creator."@en ;
+        ehri:appraisal "Example appraisal, destruction and scheduling information."@en ;
+        ehri:physicalCharacteristicsAndTechnicalRequirements "Example physical characteristics."@en ;
+        ehri:otherFindingAids "Example finding aids."@en ;
+        ehri:locationOfCopies "Example existence and location of copies."@en ;
+        ehri:publicationNote "Example publication note."@en ;
+        ehri:archivistNote "Example archivist note."@en ;
+        ehri:relatedMaterial "Example related units of description."@en ;
+        ehri:separatedMaterial "Example separated units of description."@en ;
+        ehri:hasOrHadScript ehri_material_script:Latn ;
+        # Not produced by the Update Service: direct copy links
+        ehri:hasCopy ehri_units:nl-000002-example_copy ;
+        rdfs:seeAlso <https://portal.ehri-project.eu/units/be-000001-kd_00001> .
+
+# Second level
+ehri_units:be-000001-kd_00001-1
+        a ehri:RecordSet ;
+        rico:identifier "1" ;
+        rico:hasRecordSetType ehri_rst:Subcollection ;
+        rico:title "Example sub-collection"@en ;
+        rico:hasOrHadHolder ehri_institutions:be-000001 ;
+        rico:hasOrHadSubject ehri_terms:2 , ehri_cb:000001 ;
+        rico:isOrWasIncludedIn ehri_units:be-000001-kd_00001 ;
+        rico:includesOrIncluded ehri_units:be-000001-kd_00001-1-1 .
+
+# Third level
+ehri_units:be-000001-kd_00001-1-1
+        a ehri:RecordSet ;
+        rico:identifier "1" ;
+        rico:hasRecordSetType ehri:Item ;
+        rico:title "Example item"@en ;
+        rico:hasOrHadHolder ehri_institutions:be-000001 ;
+        rico:hasOrHadSubject ehri_pers:000001 , ehri_pers:000002 , ehri_families:000002 ;
+        rico:isOrWasIncludedIn ehri_units:be-000001-kd_00001-1 .
+
+# A copy held by another institution
+ehri_units:nl-000002-example_copy
+        a ehri:RecordSet ;
+        rico:identifier "example_copy" ;
+        rico:hasRecordSetType ehri:OtherLevel ;
+        rico:title "Example copy of KD_00001"@en ;
+        rico:hasOrHadHolder ehri_institutions:nl-000002 ;
+        rico:thingIsSourceOfRelation ehri_is_copy_of_relations:00000000-0000-0000-0000-000000000001 ;
+        rico:thingIsTargetOfRelation ehri_has_copy_relations:00000000-0000-0000-0000-000000000001 ;
+        ehri:locationOfOriginals "Example existence and location of originals."@en ;
+        # Not produced by the Update Service: direct copy links
+        ehri:isCopyOf ehri_units:be-000001-kd_00001 .
+
+# Parallel title, alternative identifier, and acquisition of a description
+<http://lod.ehri-project-test.eu/units/be-000001-kd_00001/parallelNames/Verzameling_JMDV>
+        a rico:Title ;
+        rico:name "Verzameling JMDV"@nl ;
+        rico:isOrWasTitleOf ehri_units:be-000001-kd_00001 .
+
+<http://lod.ehri-project-test.eu/units/be-000001-kd_00001/alternateIDs/1>
+        a rico:Identifier ;
+        rico:textualValue "JMDV-0001" ;
+        rico:isOrWasIdentifierOf ehri_units:be-000001-kd_00001 .
+
+<http://lod.ehri-project-test.eu/units/be-000001-kd_00001/acquisitions/1>
+        a rico:Activity ;
+        rico:hasActivityType ehri_activity_types:acquisition ;
+        rico:generalDescription "Example immediate source of acquisition."@en .
+
+
+######################
+### Copy relations ###
+######################
+
+# Each Portal copy link (here a "location of copies" link from KD_00001 to
+# its copy) gives a pair of relations, identified by the Portal link's ID.
+ehri_has_copy_relations:00000000-0000-0000-0000-000000000001
+        a ehri:HasCopyRelation ;
+        rico:relationHasSource ehri_units:be-000001-kd_00001 ;
+        rico:relationHasTarget ehri_units:nl-000002-example_copy ;
+        rico:generalDescription "Example description of the copy." .
+
+ehri_is_copy_of_relations:00000000-0000-0000-0000-000000000001
+        a ehri:IsCopyOfRelation ;
+        rico:relationHasSource ehri_units:nl-000002-example_copy ;
+        rico:relationHasTarget ehri_units:be-000001-kd_00001 ;
+        rico:generalDescription "Example description of the copy." .
+
+
+###################
+### Authorities ###
+###################
+
+# Corporate body
+ehri_cb:000001
+        a ehri:CorporateBody ;
+        rico:name "Comité de Défense des Juifs"@en ;
+        rico:hasOrHadAgentName <http://lod.ehri-project-test.eu/vocabularies/ehri-cb/000001/otherNames/CDJ> ;
+        rico:history "Example history of the corporate body."@en ;
+        rico:generalDescription "Example general context."@en ;
+        rico:date "1942-1944" ;
+        rico:hasBeginningDate ehri_dates:1942 ;
+        rico:hasEndDate ehri_dates:1944 ;
+        rico:hasOrHadLegalStatus <http://lod.ehri-project-test.eu/vocabularies/ehri-cb/000001/legalStatuses/1> ;
+        rico:performsOrPerformed <http://lod.ehri-project-test.eu/vocabularies/ehri-cb/000001/functions/1> ;
+        rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001-1 ;
+        # Not produced by the Update Service: creator links
+        rico:isCreatorOf ehri_units:be-000001-kd_00001 ;
+        ehri:structureOrGenealogy "Example internal structure."@en ;
+        ehri:sources "Example sources."@en .
+
+<http://lod.ehri-project-test.eu/vocabularies/ehri-cb/000001/otherNames/CDJ>
+        a ehri:AlternateAgentName ;
+        rico:name "CDJ" ;
+        rico:isOrWasAgentNameOf ehri_cb:000001 .
+
+<http://lod.ehri-project-test.eu/vocabularies/ehri-cb/000001/legalStatuses/1>
+        a rico:LegalStatus ;
+        rico:generalDescription "Example legal status."@en ;
+        rico:isOrWasLegalStatusOf ehri_cb:000001 .
+
+<http://lod.ehri-project-test.eu/vocabularies/ehri-cb/000001/functions/1>
+        a rico:Activity ;
+        rico:hasActivityType ehri_activity_types:function ;
+        rico:generalDescription "Example function."@en ;
+        rico:isOrWasPerformedBy ehri_cb:000001 .
+
+# Family
+ehri_families:000002
+        a ehri:Family ;
+        rico:name "Example family"@en ;
+        rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001-1-1 ;
+        ehri:structureOrGenealogy "Example genealogy."@en .
+
+# Person
+ehri_pers:000001
+        a ehri:Person ;
+        rico:name "Hertz Jospa" ;
+        rico:hasOrHadAgentName <http://lod.ehri-project-test.eu/vocabularies/ehri-pers/000001/parallelNames/Hertz_Jospa> ;
+        rico:history "Example biographical history."@en ;
+        rico:date "1904-1966" ;
+        rico:hasBirthDate ehri_dates:1904 ;
+        rico:hasDeathDate ehri_dates:1966 ;
+        rico:performsOrPerformed <http://lod.ehri-project-test.eu/vocabularies/ehri-pers/000001/occupations/1> ;
+        rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001-1-1 ;
+        ehri:sources "Example sources."@en .
+
+<http://lod.ehri-project-test.eu/vocabularies/ehri-pers/000001/parallelNames/Hertz_Jospa>
+        a ehri:ParallelAgentName ;
+        rico:name "Hertz Jospa" ;
+        rico:isOrWasAgentNameOf ehri_pers:000001 .
+
+<http://lod.ehri-project-test.eu/vocabularies/ehri-pers/000001/occupations/1>
+        a rico:Activity ;
+        rico:hasActivityType ehri_activity_types:occupation ;
+        rico:generalDescription "Example occupation."@en ;
+        rico:isOrWasPerformedBy ehri_pers:000001 .
+
+# Person linked to an external dataset (CDEC), used by federated queries
+ehri_pers:000002
+        a ehri:Person ;
+        rico:name "Example person" ;
+        rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001-1-1 ;
+        owl:sameAs <http://dati.cdec.it/lod/shoah/person/example-1> .
+
+
+####################
+### Vocabularies ###
+####################
+
+ehri_terms:1
+        a skos:Concept ;
+        rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001 ;
+        skos:prefLabel "Resistance"@en ;
+        skos:altLabel "Resistance movements"@en ;
+        skos:narrower ehri_terms:2 ;
+        skos:inScheme <http://lod.ehri-project-test.eu/vocabularies/ehri-terms> .
+
+ehri_terms:2
+        a skos:Concept ;
+        rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001-1 ;
+        skos:prefLabel "Jewish resistance"@en , "Joods verzet"@nl ;
+        skos:scopeNote "Example scope note."@en ;
+        skos:broader ehri_terms:1 ;
+        skos:inScheme <http://lod.ehri-project-test.eu/vocabularies/ehri-terms> .
+
+ehri_camps:1
+        a skos:Concept ;
+        rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001 ;
+        geo:lat "51.0330"^^xsd:double ;
+        geo:long "4.4750"^^xsd:double ;
+        skos:prefLabel "Mechelen"@en ;
+        skos:inScheme <http://lod.ehri-project-test.eu/vocabularies/ehri-camps> .
+
+ehri_languages:nld
+        a rico:Language ;
+        rico:name "nld" ;
+        rico:isOrWasLanguageOfSomeMembersOf ehri_units:be-000001-kd_00001 .
+
+ehri_languages:fra
+        a rico:Language ;
+        rico:name "fra" ;
+        rico:isOrWasLanguageOfSomeMembersOf ehri_units:be-000001-kd_00001 .
+
+ehri_material_script:Latn
+        a ehri:MaterialScript ;
+        rico:name "Latn" ;
+        ehri:isOrWasScriptOf ehri_units:be-000001-kd_00001 .
+
+# Activity types (the Update Service uses the classes themselves as values)
+ehri_activity_types:acquisition
+        a ehri:AcquisitionType ;
+        rico:name "Acquisition"@en .
+
+ehri_activity_types:function
+        a ehri:FunctionType ;
+        rico:name "Function"@en .
+
+ehri_activity_types:occupation
+        a rico:OccupationType ;
+        rico:name "Occupation"@en .
+
+
+#############
+### Dates ###
+#############
+
+ehri_dates:1904
+        a rico:Date ;
+        rico:normalizedDateValue "1904" ;
+        rico:isBirthDateOf ehri_pers:000001 .
+
+ehri_dates:1940
+        a rico:Date ;
+        rico:normalizedDateValue "1940" ;
+        rico:isBeginningDateOf ehri_units:be-000001-kd_00001 .
+
+ehri_dates:1942
+        a rico:Date ;
+        rico:normalizedDateValue "1942" ;
+        rico:isBeginningDateOf ehri_cb:000001 .
+
+ehri_dates:1944
+        a rico:Date ;
+        rico:normalizedDateValue "1944" ;
+        rico:isEndDateOf ehri_cb:000001 .
+
+ehri_dates:1945
+        a rico:Date ;
+        rico:normalizedDateValue "1945" ;
+        rico:isEndDateOf ehri_units:be-000001-kd_00001 .
+
+ehri_dates:1966
+        a rico:Date ;
+        rico:normalizedDateValue "1966" ;
+        rico:isDeathDateOf ehri_pers:000001 .

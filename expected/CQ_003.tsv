@@ -1,0 +1,2 @@
+?address	?countryLabel	?email	?institution	?institutionLabel	?institutionLocation	?phone	?physicalLocation	?zipCode
+"Goswin de Stassartstraat 153"	"Belgium"@en	"archives@example.org"	<http://lod.ehri-project-test.eu/institutions/be-000001>	"Kazerne Dossin"@en	<http://lod.ehri-project-test.eu/institutions/be-000001/locations/1>	"+32 15 00 00 00"	<http://lod.ehri-project-test.eu/institutions/be-000001/addresses/1>	"2800"

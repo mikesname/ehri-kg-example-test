@@ -1,0 +1,4 @@
+?concept	?recordCount
+<http://lod.ehri-project-test.eu/vocabularies/ehri-camps/1>	"1"^^<http://www.w3.org/2001/XMLSchema#integer>
+<http://lod.ehri-project-test.eu/vocabularies/ehri-terms/1>	"1"^^<http://www.w3.org/2001/XMLSchema#integer>
+<http://lod.ehri-project-test.eu/vocabularies/ehri-terms/2>	"1"^^<http://www.w3.org/2001/XMLSchema#integer>

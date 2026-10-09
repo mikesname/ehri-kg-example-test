@@ -1,0 +1,3 @@
+?country	?meanByCountry
+<http://lod.ehri-project-test.eu/countries/be>	"3"^^<http://www.w3.org/2001/XMLSchema#decimal>
+<http://lod.ehri-project-test.eu/countries/nl>	"1"^^<http://www.w3.org/2001/XMLSchema#decimal>

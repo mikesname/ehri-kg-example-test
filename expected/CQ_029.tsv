@@ -1,0 +1,2 @@
+?institution	?institutionLabel	?latitude	?longitude
+<http://lod.ehri-project-test.eu/institutions/be-000001>	"Kazerne Dossin"@en	"51.033"^^<http://www.w3.org/2001/XMLSchema#double>	"4.475"^^<http://www.w3.org/2001/XMLSchema#double>

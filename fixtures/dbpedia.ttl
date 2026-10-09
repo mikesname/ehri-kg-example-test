@@ -1,0 +1,13 @@
+# Mock of the DBpedia SPARQL endpoint (https://dbpedia.org/sparql/) for
+# federated competency questions. Contains only the triples those queries
+# need for the countries in example.ttl. Population figures are approximate.
+
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix dbr: <http://dbpedia.org/resource/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+dbr:Belgium
+        dbo:populationTotal "11800000"^^xsd:nonNegativeInteger .
+
+dbr:Netherlands
+        dbo:populationTotal "17900000"^^xsd:nonNegativeInteger .

@@ -1,0 +1,20 @@
+# Mock of the CDEC SPARQL endpoint (http://lod.xdams.org/sparql) for
+# federated competency questions. Contains only the triples those queries
+# need for the person linked from example.ttl. All data is illustrative.
+
+@prefix bio-ext: <http://dati.cdec.it/lod/bio-ext/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix shoah: <http://dati.cdec.it/lod/shoah/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://dati.cdec.it/lod/shoah/person/example-1>
+        a foaf:Person ;
+        bio-ext:shoahSurvivor "true"^^xsd:boolean ;
+        shoah:persecution <http://dati.cdec.it/lod/shoah/persecution/example-1> .
+
+<http://dati.cdec.it/lod/shoah/persecution/example-1>
+        shoah:toNaziCamp <http://dati.cdec.it/lod/shoah/camp/example-1> .
+
+<http://dati.cdec.it/lod/shoah/camp/example-1>
+        rdfs:label "Auschwitz" .
