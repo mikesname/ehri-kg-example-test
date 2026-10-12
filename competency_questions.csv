@@ -127,7 +127,7 @@ SELECT ?countryLabel (COUNT(DISTINCT ?record) as ?recordsCount) WHERE {
 GROUP BY ?countryLabel"
 CQ_011,Statistics of records whose subject is or not a survivor (Federated query against CDEC),"Survivor boolean, record count integer",CDEC,Federated analytics,Accepted,Medium,High,,,"PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
 PREFIX ehri_institutions: <http://lod.ehri-project-test.eu/institutions/>
 PREFIX bio-ext: <http://dati.cdec.it/lod/bio-ext/>
@@ -136,7 +136,7 @@ SELECT ?survivor (COUNT(?record) as ?recordCount) WHERE {
   ?record a ehri:RecordSet ;
     rico:hasOrHadHolder ehri_institutions:be-000001 ;
     rico:hasOrHadSubject ?personEHRI .
-  ?personEHRI owl:sameAs ?person .
+  ?personEHRI rdfs:seeAlso ?person .
   SERVICE <http://lod.xdams.org/sparql> {
     ?person a foaf:Person ;
       bio-ext:shoahSurvivor ?survivor .
@@ -145,7 +145,6 @@ SELECT ?survivor (COUNT(?record) as ?recordCount) WHERE {
 GROUP BY ?survivor"
 CQ_012,Records mentioning people deported to Auschwitz (Federated query against CDEC),List of URIs,CDEC,Federated analytics,Accepted,Medium,High,,,"PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rico: <https://www.ica.org/standards/RiC/ontology#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX ehri: <http://lod.ehri-project-test.eu/ontology#>
 PREFIX ehri_institutions: <http://lod.ehri-project-test.eu/institutions/>
@@ -156,7 +155,7 @@ SELECT ?record WHERE {
   ?record a ehri:RecordSet ;
     rico:hasOrHadHolder ehri_institutions:be-000001 ;
     rico:hasOrHadSubject ?personEHRI .
-  ?personEHRI owl:sameAs ?person .
+  ?personEHRI rdfs:seeAlso ?person .
   SERVICE <http://lod.xdams.org/sparql> {
     ?person a foaf:Person ;
       shoah:persecution ?persecution .

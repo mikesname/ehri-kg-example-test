@@ -208,7 +208,6 @@ ehri_units:be-000001-kd_00001
         rico:note "Example general note."@en ;
         rico:hasOrHadSomeMembersWithLanguage ehri_languages:nld , ehri_languages:fra ;
         rico:hasOrHadHolder ehri_institutions:be-000001 ;
-        # FIXME: creator links don't seem to be generated yet by update service...
         rico:hasCreator ehri_cb:000001 ;
         rico:hasOrHadSubject ehri_terms:1 , ehri_camps:1 ;
         rico:resultsOrResultedFrom <http://lod.ehri-project-test.eu/units/be-000001-kd_00001/acquisitions/1> ;
@@ -372,7 +371,7 @@ ehri_pers:000002
         a ehri:Person ;
         rico:name "Example person" ;
         rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001-1-1 ;
-        owl:sameAs <http://dati.cdec.it/lod/shoah/person/example-1> .
+        rdfs:seeAlso <http://dati.cdec.it/lod/shoah/person/example-1> .
 
 
 ####################

@@ -1,2 +1,2 @@
 ?survivor	?recordCount
-"true"^^<http://www.w3.org/2001/XMLSchema#boolean>	"1"^^<http://www.w3.org/2001/XMLSchema#integer>
+"true"	"1"^^<http://www.w3.org/2001/XMLSchema#integer>
