@@ -3,8 +3,6 @@
 #
 # FIXME:
 #
-# * activity types are instances of ehri:AcquisitionType, ehri:FunctionType,
-#   and rico:OccupationType, where the mappings use the classes themselves;
 # * inconsistency in ehri:Item and ehri:OtherLevel in Ontology version 0.2.0
 #
 
@@ -146,8 +144,8 @@ ehri_institutions:nl-000002
 
 <http://lod.ehri-project-test.eu/institutions/be-000001/coordinates/1>
         a rico:Coordinates ;
-        rico:latitude "51.0330"^^xsd:double ;
-        rico:longitude "4.4750"^^xsd:double ;
+        rico:latitude "51.033"^^xsd:decimal ;
+        rico:longitude "4.475"^^xsd:decimal ;
         rico:isOrWasCoordinatesOf <http://lod.ehri-project-test.eu/institutions/be-000001/addresses/1> .
 
 # A minimal location and address: the address's country gives the
@@ -202,8 +200,8 @@ ehri_units:be-000001-kd_00001
         rico:recordResourceStructure "Example system of arrangement."@en ;
         rico:recordResourceSourceOfInformation "Example sources used to prepare the description."@en ;
         rico:date "1940-1945" ;
-        rico:hasBeginningDate ehri_dates:1940 ;
-        rico:hasEndDate ehri_dates:1945 ;
+        rico:hasBeginningDate ehri_dates:1940-01-01 ;
+        rico:hasEndDate ehri_dates:1945-12-31 ;
         rico:accruals "Example accruals."@en ;
         rico:conditionsOfAccess "Example conditions governing access."@en ;
         rico:conditionsOfUse "Example conditions of reproduction."@en ;
@@ -228,7 +226,6 @@ ehri_units:be-000001-kd_00001
         ehri:relatedMaterial "Example related units of description."@en ;
         ehri:separatedMaterial "Example separated units of description."@en ;
         ehri:hasOrHadScript ehri_material_script:Latn ;
-        # Not produced by the Update Service: direct copy links
         ehri:hasCopy ehri_units:nl-000002-example_copy ;
         rdfs:seeAlso <https://portal.ehri-project.eu/units/be-000001-kd_00001> .
 
@@ -263,7 +260,6 @@ ehri_units:nl-000002-example_copy
         rico:thingIsSourceOfRelation ehri_is_copy_of_relations:00000000-0000-0000-0000-000000000001 ;
         rico:thingIsTargetOfRelation ehri_has_copy_relations:00000000-0000-0000-0000-000000000001 ;
         ehri:locationOfOriginals "Example existence and location of originals."@en ;
-        # Not produced by the Update Service: direct copy links
         ehri:isCopyOf ehri_units:be-000001-kd_00001 .
 
 # Parallel title, alternative identifier, and acquisition of a description
@@ -314,8 +310,8 @@ ehri_cb:000001
         rico:history "Example history of the corporate body."@en ;
         rico:generalDescription "Example general context."@en ;
         rico:date "1942-1944" ;
-        rico:hasBeginningDate ehri_dates:1942 ;
-        rico:hasEndDate ehri_dates:1944 ;
+        rico:hasBeginningDate ehri_dates:1942-01-01 ;
+        rico:hasEndDate ehri_dates:1944-12-31 ;
         rico:hasOrHadLegalStatus <http://lod.ehri-project-test.eu/vocabularies/ehri-cb/000001/legalStatuses/1> ;
         rico:performsOrPerformed <http://lod.ehri-project-test.eu/vocabularies/ehri-cb/000001/functions/1> ;
         rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001-1 ;
@@ -354,8 +350,8 @@ ehri_pers:000001
         rico:hasOrHadAgentName <http://lod.ehri-project-test.eu/vocabularies/ehri-pers/000001/parallelNames/Hertz_Jospa> ;
         rico:history "Example biographical history."@en ;
         rico:date "1904-1966" ;
-        rico:hasBirthDate ehri_dates:1904 ;
-        rico:hasDeathDate ehri_dates:1966 ;
+        rico:hasBirthDate ehri_dates:1904-01-01 ;
+        rico:hasDeathDate ehri_dates:1966-12-31 ;
         rico:performsOrPerformed <http://lod.ehri-project-test.eu/vocabularies/ehri-pers/000001/occupations/1> ;
         rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001-1-1 ;
         ehri:sources "Example sources."@en .
@@ -402,8 +398,8 @@ ehri_terms:2
 ehri_camps:1
         a skos:Concept ;
         rico:isOrWasSubjectOf ehri_units:be-000001-kd_00001 ;
-        geo:lat "51.0330"^^xsd:double ;
-        geo:long "4.4750"^^xsd:double ;
+        geo:lat "51.033"^^xsd:decimal ;
+        geo:long "4.475"^^xsd:decimal ;
         skos:prefLabel "Mechelen"@en ;
         skos:inScheme <http://lod.ehri-project-test.eu/vocabularies/ehri-camps> .
 
@@ -422,7 +418,7 @@ ehri_material_script:Latn
         rico:name "Latn" ;
         ehri:isOrWasScriptOf ehri_units:be-000001-kd_00001 .
 
-# Activity types (the Update Service uses the classes themselves as values)
+# Activity types
 ehri_activity_types:acquisition
         a ehri:AcquisitionType ;
         rico:name "Acquisition"@en .
@@ -440,32 +436,36 @@ ehri_activity_types:occupation
 ### Dates ###
 #############
 
-ehri_dates:1904
+# Dates are full ISO 8601 dates, as given by the Portal. With a date's
+# precision unset, as here, all of YYYY-MM-DD is significant; with a precision
+# of year (or month), only YYYY (or YYYY-MM) is.
+
+ehri_dates:1904-01-01
         a rico:Date ;
-        rico:normalizedDateValue "1904" ;
+        rico:normalizedDateValue "1904-01-01" ;
         rico:isBirthDateOf ehri_pers:000001 .
 
-ehri_dates:1940
+ehri_dates:1940-01-01
         a rico:Date ;
-        rico:normalizedDateValue "1940" ;
+        rico:normalizedDateValue "1940-01-01" ;
         rico:isBeginningDateOf ehri_units:be-000001-kd_00001 .
 
-ehri_dates:1942
+ehri_dates:1942-01-01
         a rico:Date ;
-        rico:normalizedDateValue "1942" ;
+        rico:normalizedDateValue "1942-01-01" ;
         rico:isBeginningDateOf ehri_cb:000001 .
 
-ehri_dates:1944
+ehri_dates:1944-12-31
         a rico:Date ;
-        rico:normalizedDateValue "1944" ;
+        rico:normalizedDateValue "1944-12-31" ;
         rico:isEndDateOf ehri_cb:000001 .
 
-ehri_dates:1945
+ehri_dates:1945-12-31
         a rico:Date ;
-        rico:normalizedDateValue "1945" ;
+        rico:normalizedDateValue "1945-12-31" ;
         rico:isEndDateOf ehri_units:be-000001-kd_00001 .
 
-ehri_dates:1966
+ehri_dates:1966-12-31
         a rico:Date ;
-        rico:normalizedDateValue "1966" ;
+        rico:normalizedDateValue "1966-12-31" ;
         rico:isDeathDateOf ehri_pers:000001 .
